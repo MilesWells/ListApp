@@ -4,7 +4,7 @@ import { List } from "./List";
 export const Entrypoint: React.FC = () => {
   return (
     <div>
-      <List />
+      <List onChange={() => {}} />
     </div>
   );
 };

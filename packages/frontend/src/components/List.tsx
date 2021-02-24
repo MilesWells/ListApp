@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { Button, Form, FormControlProps, InputGroup } from "react-bootstrap";
 
 type ListItemProps = Pick<FormControlProps, "onChange" | "value"> & {
@@ -41,18 +46,29 @@ const ListItem: React.FC<ListItemProps> = ({
   );
 };
 
-export const List: React.FC = () => {
+interface ListProps {
+  onChange: (items: string[]) => void;
+}
+
+export const List: React.FC<ListProps> = ({ onChange }) => {
   const [items, setItems] = useState<string[]>([""]);
   const [focusIdx, setFocusIdx] = useState<number>();
 
-  useEffect(() => {
+  // reset focusIdx after render
+  useLayoutEffect(() => {
     if (focusIdx !== undefined) setFocusIdx(undefined);
   }, [focusIdx]);
 
+  useEffect(() => {
+    onChange(items);
+  }, [items, onChange]);
+
   const deleteItem = useCallback(
     (idx: number) => {
-      if (items.length > 1)
+      if (items.length > 1) {
         setItems((cur) => [...cur.slice(0, idx), ...cur.slice(idx + 1)]);
+        setFocusIdx(idx === 0 ? 0 : idx - 1);
+      }
     },
     [items]
   );
@@ -95,10 +111,8 @@ export const List: React.FC = () => {
                 setFocusIdx(idx - 1);
                 break;
               case "Backspace":
-                if (item.length === 0) {
-                  deleteItem(idx);
-                  setFocusIdx(idx === 0 ? 0 : idx - 1);
-                } else defaultCase = true;
+                if (item.length === 0) deleteItem(idx);
+                else defaultCase = true;
                 break;
               default:
                 defaultCase = true;
