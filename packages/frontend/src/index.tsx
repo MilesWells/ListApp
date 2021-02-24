@@ -4,6 +4,8 @@ import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import { Entrypoint } from "./components";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+
 ReactDOM.render(
   <React.StrictMode>
     <Entrypoint />

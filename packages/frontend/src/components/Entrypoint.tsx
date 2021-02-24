@@ -1,5 +1,10 @@
 import React from "react";
+import { List } from "./List";
 
 export const Entrypoint: React.FC = () => {
-  return <div>Entrypoint</div>;
+  return (
+    <div>
+      <List />
+    </div>
+  );
 };
