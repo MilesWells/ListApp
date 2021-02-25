@@ -6,7 +6,10 @@ import db from "../store/mongodb.ts";
 interface ListSchema {
   _id: { $oid: string };
   items: string[];
+  name: string;
 }
+
+type ListPayload = Omit<ListSchema, "_id">;
 
 const listCollection = db.collection<ListSchema>("lists");
 
@@ -33,16 +36,15 @@ async function getList(ctx: RouterContext) {
 }
 
 async function createList(ctx: RouterContext) {
-  const list: string[] = await ctx.request.body().value;
+  const list: ListPayload = JSON.parse(await ctx.request.body().value);
+
   try {
-    const documentId = await listCollection.insertOne({
-      items: list,
-    });
+    const documentId = await listCollection.insertOne(list);
 
     ctx.response.status = 201;
     ctx.response.body = documentId;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     ctx.response.status = 500;
     ctx.response.body = err;
   }
@@ -65,7 +67,7 @@ async function deleteList(ctx: RouterContext) {
     ctx.response.status = count === 0 ? 404 : 204;
     if (count === 0) ctx.response.body = "Id not found";
   } catch (err) {
-    console.log(err);
+    console.error(err);
     ctx.response.status = 500;
     ctx.response.body = err;
   }

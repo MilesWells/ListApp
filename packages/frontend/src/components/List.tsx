@@ -6,7 +6,10 @@ import React, {
 } from "react";
 import { Button, Form, FormControlProps, InputGroup } from "react-bootstrap";
 
-type ListItemProps = Pick<FormControlProps, "onChange" | "value"> & {
+type ListItemProps = Pick<
+  FormControlProps,
+  "onChange" | "value" | "disabled"
+> & {
   focus?: boolean;
   onDelete: () => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -14,6 +17,7 @@ type ListItemProps = Pick<FormControlProps, "onChange" | "value"> & {
 };
 
 const ListItem: React.FC<ListItemProps> = ({
+  disabled,
   focus = false,
   onChange,
   onDelete,
@@ -31,15 +35,20 @@ const ListItem: React.FC<ListItemProps> = ({
     <InputGroup>
       {showDelete && (
         <InputGroup.Prepend>
-          <Button onClick={onDelete} variant="outline-danger">
+          <Button
+            disabled={disabled}
+            onClick={onDelete}
+            variant="outline-danger"
+          >
             Delete
           </Button>
         </InputGroup.Prepend>
       )}
       <Form.Control
-        ref={ref}
+        disabled={disabled}
         onChange={onChange}
         onKeyDown={onKeyDown}
+        ref={ref}
         value={value}
       />
     </InputGroup>
@@ -47,10 +56,11 @@ const ListItem: React.FC<ListItemProps> = ({
 };
 
 interface ListProps {
+  locked?: boolean;
   onChange: (items: string[]) => void;
 }
 
-export const List: React.FC<ListProps> = ({ onChange }) => {
+export const List: React.FC<ListProps> = ({ locked = false, onChange }) => {
   const [items, setItems] = useState<string[]>([""]);
   const [focusIdx, setFocusIdx] = useState<number>();
 
@@ -77,9 +87,9 @@ export const List: React.FC<ListProps> = ({ onChange }) => {
     <>
       {items.map((item, idx) => (
         <ListItem
+          disabled={locked}
           focus={focusIdx === idx}
           key={idx}
-          value={item}
           onChange={(event) => {
             setItems((cur) => [
               ...cur.slice(0, idx),
@@ -91,7 +101,6 @@ export const List: React.FC<ListProps> = ({ onChange }) => {
           onKeyDown={(event) => {
             let defaultCase = false;
 
-            console.log(event.key);
             switch (event.key) {
               case "Enter":
                 setItems((cur) => [
@@ -121,6 +130,7 @@ export const List: React.FC<ListProps> = ({ onChange }) => {
             if (!defaultCase) event.preventDefault();
           }}
           showDelete={items.length > 1}
+          value={item}
         />
       ))}
     </>
