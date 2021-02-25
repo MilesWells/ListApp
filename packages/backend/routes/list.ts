@@ -1,4 +1,5 @@
 import { Router, RouterContext } from "https://deno.land/x/oak/mod.ts";
+import { Bson } from "https://deno.land/x/mongo@v0.21.0/mod.ts";
 
 import db from "../store/mongodb.ts";
 
@@ -21,7 +22,7 @@ async function getList(ctx: RouterContext) {
     return;
   }
 
-  const found = await listCollection.findOne({ _id: id });
+  const found = await listCollection.findOne({ _id: new Bson.ObjectId(id) });
 
   if (found === undefined) {
     ctx.response.status = 404;
@@ -47,9 +48,33 @@ async function createList(ctx: RouterContext) {
   }
 }
 
+async function deleteList(ctx: RouterContext) {
+  const id = ctx.params.id;
+
+  if (id === undefined) {
+    ctx.response.status = 404;
+    ctx.response.body = "No id provided";
+    return;
+  }
+
+  try {
+    const count = await listCollection.deleteOne({
+      _id: new Bson.ObjectId(id),
+    });
+
+    ctx.response.status = count === 0 ? 404 : 204;
+    if (count === 0) ctx.response.body = "Id not found";
+  } catch (err) {
+    console.log(err);
+    ctx.response.status = 500;
+    ctx.response.body = err;
+  }
+}
+
 export function buildListRoutes(router: Router) {
   router
     .get("/lists", getLists)
     .get("/lists/:id", getList)
-    .post("/lists", createList);
+    .post("/lists", createList)
+    .delete("/lists/:id", deleteList);
 }

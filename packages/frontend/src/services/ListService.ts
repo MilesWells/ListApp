@@ -1,4 +1,4 @@
-import { API_URL } from ".";
+import { API_URL } from "./config";
 
 export interface List {
   _id: string;
@@ -18,7 +18,7 @@ export const ListService = {
   },
   getList: async (id: string) => {
     try {
-      const response = await fetch(`baseUrl/${id}`);
+      const response = await fetch(`${baseUrl}/${id}`);
       return (await response.json()) as List;
     } catch (err) {
       console.error(err);
@@ -31,6 +31,14 @@ export const ListService = {
         body: JSON.stringify(list),
       });
       return (await response.json()) as List;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  deleteList: async (id: string) => {
+    try {
+      const response = await fetch(`${baseUrl}/${id}`, { method: "DELETE" });
+      return response.ok;
     } catch (err) {
       console.error(err);
     }
