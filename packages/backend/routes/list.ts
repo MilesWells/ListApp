@@ -82,8 +82,8 @@ async function updateList(ctx: RouterContext) {
     return;
   }
 
-  const list: ListPayload = await ctx.request.body().value;
-  console.log(id, list);
+  const list: ListPayload = JSON.parse(await ctx.request.body().value);
+
   try {
     const { upsertedId } = await listCollection.updateOne(
       { _id: new Bson.ObjectId(id) },

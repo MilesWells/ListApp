@@ -14,10 +14,6 @@ export const ListService = {
       const response = await fetch(baseUrl, {
         method: "POST",
         body: JSON.stringify({ items, name }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
       });
       return (await response.json()) as IList;
     } catch (err) {
@@ -53,12 +49,8 @@ export const ListService = {
       const response = await fetch(`${baseUrl}/${id}`, {
         method: "PUT",
         body: JSON.stringify({ items, name }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
       });
-      return (await response.json()) as IList;
+      return response.ok;
     } catch (err) {
       console.error(err);
     }

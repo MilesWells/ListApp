@@ -67,7 +67,7 @@ export const EditList: React.FC = () => {
 
             try {
               const list = await ListService.updateList(id, items, name);
-              if (list !== undefined) history.push("/");
+              if (list) history.push("/");
             } catch (err) {
               console.error(err);
             } finally {
