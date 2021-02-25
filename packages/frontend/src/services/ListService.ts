@@ -14,6 +14,10 @@ export const ListService = {
       const response = await fetch(baseUrl, {
         method: "POST",
         body: JSON.stringify({ items, name }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       });
       return (await response.json()) as IList;
     } catch (err) {
@@ -40,6 +44,21 @@ export const ListService = {
     try {
       const response = await fetch(baseUrl);
       return (await response.json()) as IList[];
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  updateList: async (id: string, items: string[], name: string) => {
+    try {
+      const response = await fetch(`${baseUrl}/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ items, name }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      return (await response.json()) as IList;
     } catch (err) {
       console.error(err);
     }

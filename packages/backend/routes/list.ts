@@ -73,10 +73,37 @@ async function deleteList(ctx: RouterContext) {
   }
 }
 
+async function updateList(ctx: RouterContext) {
+  const id = ctx.params.id;
+
+  if (id === undefined) {
+    ctx.response.status = 404;
+    ctx.response.body = "No id provided";
+    return;
+  }
+
+  const list: ListPayload = await ctx.request.body().value;
+  console.log(id, list);
+  try {
+    const { upsertedId } = await listCollection.updateOne(
+      { _id: new Bson.ObjectId(id) },
+      { $set: list }
+    );
+
+    ctx.response.status = 200;
+    ctx.response.body = upsertedId;
+  } catch (err) {
+    console.error(err);
+    ctx.response.status = 500;
+    ctx.response.body = err;
+  }
+}
+
 export function buildListRoutes(router: Router) {
   router
     .get("/lists", getLists)
     .get("/lists/:id", getList)
     .post("/lists", createList)
-    .delete("/lists/:id", deleteList);
+    .delete("/lists/:id", deleteList)
+    .put("/lists/:id", updateList);
 }

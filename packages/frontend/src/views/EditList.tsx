@@ -1,15 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Form, Nav } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 
 import { List } from "../components";
 import { ListService } from "../services";
 
-export const NewList: React.FC = () => {
+export const EditList: React.FC = () => {
+  const [initItems, setInitItems] = useState<string[]>([]);
   const [items, setItems] = useState<string[]>([]);
   const [name, setName] = useState<string>("");
   const [inFlight, setInFlight] = useState(false);
   const history = useHistory();
+  const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    async function doStuff() {
+      setInFlight(true);
+      const list = await ListService.getList(id);
+
+      if (list === undefined) {
+        history.push("/");
+        return;
+      }
+
+      setInitItems(list.items);
+      setName(list.name);
+      setInFlight(false);
+    }
+
+    doStuff();
+  }, [history, id]);
 
   return (
     <Card>
@@ -32,7 +52,13 @@ export const NewList: React.FC = () => {
         </Form.Group>
         <Form.Group>
           <Form.Label>List</Form.Label>
-          <List onChange={setItems} locked={inFlight} />
+          {initItems.length > 0 && (
+            <List
+              initialItems={initItems}
+              onChange={setItems}
+              locked={inFlight}
+            />
+          )}
         </Form.Group>
         <Button
           variant="primary"
@@ -40,7 +66,7 @@ export const NewList: React.FC = () => {
             setInFlight(true);
 
             try {
-              const list = await ListService.createList(items, name);
+              const list = await ListService.updateList(id, items, name);
               if (list !== undefined) history.push("/");
             } catch (err) {
               console.error(err);

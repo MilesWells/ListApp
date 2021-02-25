@@ -56,22 +56,23 @@ const ListItem: React.FC<ListItemProps> = ({
 };
 
 interface ListProps {
+  initialItems?: string[];
   locked?: boolean;
   onChange: (items: string[]) => void;
 }
 
-export const List: React.FC<ListProps> = ({ locked = false, onChange }) => {
-  const [items, setItems] = useState<string[]>([""]);
+export const List: React.FC<ListProps> = ({
+  initialItems = [""],
+  locked = false,
+  onChange,
+}) => {
+  const [items, setItems] = useState<string[]>(initialItems);
   const [focusIdx, setFocusIdx] = useState<number>();
 
   // reset focusIdx after render
   useLayoutEffect(() => {
     if (focusIdx !== undefined) setFocusIdx(undefined);
   }, [focusIdx]);
-
-  useEffect(() => {
-    onChange(items);
-  }, [items, onChange]);
 
   const deleteItem = useCallback(
     (idx: number) => {
@@ -91,11 +92,14 @@ export const List: React.FC<ListProps> = ({ locked = false, onChange }) => {
           focus={focusIdx === idx}
           key={idx}
           onChange={(event) => {
-            setItems((cur) => [
-              ...cur.slice(0, idx),
+            const newItems = [
+              ...items.slice(0, idx),
               event.target.value,
-              ...cur.slice(idx + 1),
-            ]);
+              ...items.slice(idx + 1),
+            ];
+
+            setItems(newItems);
+            onChange(newItems);
           }}
           onDelete={() => deleteItem(idx)}
           onKeyDown={(event) => {
