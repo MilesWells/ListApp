@@ -1,17 +1,19 @@
 import { Router, RouterContext } from "https://deno.land/x/oak/mod.ts";
-import { v4 } from "https://deno.land/std@0.88.0/uuid/mod.ts";
 
-type ListStore = {
-  [listId: string]: string[];
-};
+import db from "../store/mongodb.ts";
 
-const store: ListStore = {};
-
-function getLists(ctx: RouterContext) {
-  ctx.response.body = store;
+interface ListSchema {
+  _id: { $oid: string };
+  items: string[];
 }
 
-function getList(ctx: RouterContext) {
+const listCollection = db.collection<ListSchema>("lists");
+
+async function getLists(ctx: RouterContext) {
+  ctx.response.body = await listCollection.find().toArray();
+}
+
+async function getList(ctx: RouterContext) {
   const id = ctx.params.id;
 
   if (id === undefined) {
@@ -19,17 +21,30 @@ function getList(ctx: RouterContext) {
     return;
   }
 
-  ctx.response.body = store[id];
+  const found = await listCollection.findOne({ _id: id });
+
+  if (found === undefined) {
+    ctx.response.status = 404;
+    return;
+  }
+
+  ctx.response.body = found;
 }
 
 async function createList(ctx: RouterContext) {
   const list: string[] = await ctx.request.body().value;
-  const newId = v4.generate();
+  try {
+    const documentId = await listCollection.insertOne({
+      items: list,
+    });
 
-  store[newId] = list;
-
-  ctx.response.status = 201;
-  ctx.response.body = list;
+    ctx.response.status = 201;
+    ctx.response.body = documentId;
+  } catch (err) {
+    console.log(err);
+    ctx.response.status = 500;
+    ctx.response.body = err;
+  }
 }
 
 export function buildListRoutes(router: Router) {

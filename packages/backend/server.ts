@@ -1,4 +1,5 @@
 import { Application } from "https://deno.land/x/oak/mod.ts";
+
 import { buildRouter } from "./router.ts";
 
 const router = buildRouter();
