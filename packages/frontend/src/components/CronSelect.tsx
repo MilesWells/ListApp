@@ -13,7 +13,7 @@ const daysOfWeek = [
   "Friday",
   "Saturday",
 ] as const;
-const unitsOfTime = ["day", "week", "month"] as const;
+const unitsOfTime = ["Daily", "Weekly", "Monthly"] as const;
 
 // type CronTypes = typeof cronTypes[number];
 type DaysOfWeek = typeof daysOfWeek[number];
@@ -103,10 +103,10 @@ export const CronSelect: React.FC<CronSelectProps> = ({ onChange }) => {
   }, [minute, hour, dayOfWeek, dayOfMonth, onChange]);
 
   useEffect(() => {
-    if (timeUnit !== "week") setDayOfWeek("*");
-    if (timeUnit !== "month") setDayOfMonth("*");
-    if (timeUnit === "week") setDayOfWeek("Sunday");
-    if (timeUnit === "month") setDayOfMonth(1);
+    if (timeUnit !== "Weekly") setDayOfWeek("*");
+    if (timeUnit !== "Monthly") setDayOfMonth("*");
+    if (timeUnit === "Weekly") setDayOfWeek("Sunday");
+    if (timeUnit === "Monthly") setDayOfMonth(1);
   }, [timeUnit]);
 
   return (
@@ -121,12 +121,12 @@ export const CronSelect: React.FC<CronSelectProps> = ({ onChange }) => {
         </Col> */}
         <Col lg={1}>
           <RadioGroup<UnitOfTime>
-            initialValue={"day"}
+            initialValue={"Daily"}
             onChange={setTimeUnit}
             values={[...unitsOfTime]}
           />
         </Col>
-        {timeUnit === "week" && (
+        {timeUnit === "Weekly" && (
           <Col lg={1}>
             <Select
               items={[...daysOfWeek]}
@@ -134,7 +134,7 @@ export const CronSelect: React.FC<CronSelectProps> = ({ onChange }) => {
             />
           </Col>
         )}
-        {timeUnit === "month" && (
+        {timeUnit === "Monthly" && (
           <Col lg={1}>
             <Select
               items={[
