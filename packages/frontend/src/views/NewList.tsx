@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Form, Nav } from "react-bootstrap";
+import Cron from "react-js-cron";
 import { Link, useHistory } from "react-router-dom";
+import cronstrue from "cronstrue";
 
-import { List } from "../components";
+import { CronSelect, List } from "../components";
 import { ListService } from "../services";
 
 export const NewList: React.FC = () => {
   const [items, setItems] = useState<string[]>([]);
   const [name, setName] = useState<string>("");
   const [inFlight, setInFlight] = useState(false);
+  const [cronValue, setCronValue] = useState("30 5 * * 1,6");
+  const [customCronValue, setCustomCronValue] = useState("30 5 * * 1,6");
+  const [humanReadable, setHumanReadable] = useState("");
   const history = useHistory();
+
+  useEffect(() => {
+    setHumanReadable(cronstrue.toString(cronValue));
+  }, [cronValue]);
 
   return (
     <Card>
@@ -34,6 +43,13 @@ export const NewList: React.FC = () => {
           <Form.Label>List</Form.Label>
           <List onChange={setItems} locked={inFlight} />
         </Form.Group>
+
+        <Cron value={cronValue} setValue={setCronValue} clearButton={false} />
+
+        <div>{humanReadable}</div>
+
+        <CronSelect onChange={setHumanReadable} />
+
         <Button
           variant="primary"
           onClick={async () => {
