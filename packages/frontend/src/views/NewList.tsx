@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Form, Nav } from "react-bootstrap";
-import Cron from "react-js-cron";
 import { Link, useHistory } from "react-router-dom";
 import cronstrue from "cronstrue";
 
@@ -11,8 +10,7 @@ export const NewList: React.FC = () => {
   const [items, setItems] = useState<string[]>([]);
   const [name, setName] = useState<string>("");
   const [inFlight, setInFlight] = useState(false);
-  const [cronValue, setCronValue] = useState("30 5 * * 1,6");
-  const [customCronValue, setCustomCronValue] = useState("30 5 * * 1,6");
+  const [cronValue, setCronValue] = useState("* * * * *");
   const [humanReadable, setHumanReadable] = useState("");
   const history = useHistory();
 
@@ -44,11 +42,10 @@ export const NewList: React.FC = () => {
           <List onChange={setItems} locked={inFlight} />
         </Form.Group>
 
-        <Cron value={cronValue} setValue={setCronValue} clearButton={false} />
-
         <div>{humanReadable}</div>
+        <div>{cronValue}</div>
 
-        <CronSelect onChange={setHumanReadable} />
+        <CronSelect onChange={setCronValue} />
 
         <Button
           variant="primary"

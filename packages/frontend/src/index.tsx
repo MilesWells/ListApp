@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import { Entrypoint } from "./components";
 
-import "antd/dist/antd.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 ReactDOM.render(
