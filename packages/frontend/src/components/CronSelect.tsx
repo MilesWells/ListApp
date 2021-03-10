@@ -35,12 +35,12 @@ const oneToNPadded = (num: number) => [
 ];
 
 interface TimeSelectProps {
-  onChange: ([hour, minute]: [number, number]) => void;
+  onChange: ([hour, minute]: [number | "*", number | "*"]) => void;
 }
 
 const TimeSelect: React.FC<TimeSelectProps> = ({ onChange }) => {
-  const [hour, setHour] = useState(0);
-  const [minute, setMinute] = useState(0);
+  const [hour, setHour] = useState<number | "*">(0);
+  const [minute, setMinute] = useState<number | "*">(0);
 
   return (
     <Form.Row>
@@ -49,8 +49,10 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ onChange }) => {
           items={["*", ...oneToNPadded(24)]}
           onSelect={(hour) => {
             const parsed = Number.parseInt(hour);
-            setHour(parsed);
-            onChange([parsed, minute]);
+            const value = isNaN(parsed) ? "*" : parsed;
+
+            setHour(value);
+            onChange([value, minute]);
           }}
         />
       </Col>
@@ -59,8 +61,10 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ onChange }) => {
           items={["*", ...oneToNPadded(60)]}
           onSelect={(minute) => {
             const parsed = Number.parseInt(minute);
-            setMinute(parsed);
-            onChange([hour, parsed]);
+            const value = isNaN(parsed) ? "*" : parsed;
+
+            setMinute(value);
+            onChange([hour, value]);
           }}
         />
       </Col>
@@ -97,8 +101,6 @@ export const CronSelect: React.FC<CronSelectProps> = ({ onChange }) => {
 
   useEffect(() => {
     const theString = buildCronString({ minute, hour, dayOfMonth, dayOfWeek });
-    console.log(minute, hour, dayOfMonth, dayOfWeek);
-    console.log(theString);
     onChange(theString);
   }, [minute, hour, dayOfWeek, dayOfMonth, onChange]);
 
@@ -140,7 +142,11 @@ export const CronSelect: React.FC<CronSelectProps> = ({ onChange }) => {
               items={[
                 ...Array.from({ length: 31 }, (_, i) => (i + 1).toString()),
               ]}
-              onSelect={(month) => setDayOfMonth(Number.parseInt(month))}
+              onSelect={(month) => {
+                const parsed = Number.parseInt(month);
+                console.log(parsed);
+                setDayOfMonth(isNaN(parsed) ? "*" : parsed);
+              }}
             />
           </Col>
         )}

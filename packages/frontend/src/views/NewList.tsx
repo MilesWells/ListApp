@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Form, Nav } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import cronstrue from "cronstrue";
+import Cronstrue from "cronstrue";
 
 import { CronSelect, List } from "../components";
 import { ListService } from "../services";
@@ -15,7 +15,7 @@ export const NewList: React.FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    setHumanReadable(cronstrue.toString(cronValue));
+    setHumanReadable(Cronstrue.toString(cronValue));
   }, [cronValue]);
 
   return (
