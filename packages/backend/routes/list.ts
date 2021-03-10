@@ -1,14 +1,7 @@
 import { Bson, Router, RouterContext } from "../deps.ts";
+import { ListSchema, ListPayload } from "../types.ts";
 
 import db from "../store/mongodb.ts";
-
-interface ListSchema {
-  _id: { $oid: string };
-  items: string[];
-  name: string;
-}
-
-type ListPayload = Omit<ListSchema, "_id">;
 
 const listCollection = db.collection<ListSchema>("lists");
 

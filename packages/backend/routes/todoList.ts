@@ -1,17 +1,7 @@
 import { Bson, Router, RouterContext } from "../deps.ts";
+import { TodoListPayload, TodoListSchema } from "../types.ts";
 
 import db from "../store/mongodb.ts";
-
-interface TodoListSchema {
-  _id: { $oid: string };
-  items: {
-    checked: boolean;
-    item: string;
-  }[];
-  userId: string;
-}
-
-type TodoListPayload = Omit<TodoListSchema, "_id">;
 
 const todoListCollection = db.collection<TodoListSchema>("todo-lists");
 
