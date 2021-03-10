@@ -57,6 +57,7 @@ export const EditList: React.FC = () => {
               initialItems={initItems}
               onChange={setItems}
               locked={inFlight}
+              showDelete
             />
           )}
         </Form.Group>

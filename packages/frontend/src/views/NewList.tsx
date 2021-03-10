@@ -39,7 +39,7 @@ export const NewList: React.FC = () => {
         </Form.Group>
         <Form.Group>
           <Form.Label>List</Form.Label>
-          <List onChange={setItems} locked={inFlight} />
+          <List onChange={setItems} locked={inFlight} showDelete />
         </Form.Group>
 
         <div>{humanReadable}</div>

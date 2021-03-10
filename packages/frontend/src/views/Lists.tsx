@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Media, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
+import { CheckboxList } from "../components";
 import { IList, ListService } from "../services";
 
 export const Lists: React.FC = () => {
@@ -32,6 +33,7 @@ export const Lists: React.FC = () => {
         </Nav>
       </Card.Header>
       <Card.Body>
+        <CheckboxList />
         {lists.map(({ _id }, idx) => (
           <Media key={`list-${idx}`}>
             <Button
