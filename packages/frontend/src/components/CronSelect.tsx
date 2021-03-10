@@ -144,7 +144,6 @@ export const CronSelect: React.FC<CronSelectProps> = ({ onChange }) => {
               ]}
               onSelect={(month) => {
                 const parsed = Number.parseInt(month);
-                console.log(parsed);
                 setDayOfMonth(isNaN(parsed) ? "*" : parsed);
               }}
             />
