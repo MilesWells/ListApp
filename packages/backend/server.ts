@@ -1,5 +1,4 @@
-import { Application } from "https://deno.land/x/oak/mod.ts";
-import { oakCors } from "https://deno.land/x/cors/mod.ts";
+import { Application, oakCors } from "./deps.ts";
 
 import { buildRouter } from "./router.ts";
 

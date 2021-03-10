@@ -1,5 +1,4 @@
-import { Router, RouterContext } from "https://deno.land/x/oak/mod.ts";
-import { Bson } from "https://deno.land/x/mongo@v0.21.0/mod.ts";
+import { Bson, Router, RouterContext } from "../deps.ts";
 
 import db from "../store/mongodb.ts";
 

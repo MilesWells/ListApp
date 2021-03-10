@@ -1,6 +1,5 @@
 # Todo
 
-- Create actual todo list with checkboxes n stuff
 - Write function to add list to todo list
 - Create cron jobs on server startup
 - Create cron job on list creation
